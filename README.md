@@ -148,3 +148,50 @@ BEGIN
 	end loop;
 END;
 ```
+
+### Triggers
+```sql
+-- DML Triggers
+CREATE OR REPLACE TRIGGER tr_persons
+BEFORE INSERT OR DELETE OR UPDATE ON persons
+FOR EACH ROW
+ENABLE
+DECLARE
+	v_user varchar2(20);
+BEGIN
+	SELECT user INTO v_user FROM dual;
+	IF INSERTING THEN
+		DBMS_OUTPUT.PUT_LINE('One line inserted by ' || v_user);
+	ELSIF DELETING THEN
+		DBMS_OUTPUT.PUT_LINE('One line Deleted by ' || v_user);
+	ELSIF UPDATING THEN
+		DBMS_OUTPUT.PUT_LINE('One line Updated by ' || v_user);
+	END IF;
+END;
+
+-- DDL Triggers
+CREATE OR REPLACE TRIGGER db_audit_tr 
+AFTER DDL ON DATABASE
+BEGIN
+    INSERT INTO schema_audit VALUES (
+		sysdate, 
+		sys_context('USERENV','CURRENT_USER'), 
+		ora_dict_obj_type, 
+		ora_dict_obj_name, 
+		ora_sysevent);
+END;
+
+-- Instead of Triggers
+CREATE VIEW vw_twotable AS
+SELECT full_name, subject_name FROM persons, subjects;
+
+CREATE OR REPLACE TRIGGER tr_Insert
+INSTEAD OF INSERT ON vw_twotable
+FOR EACH ROW
+BEGIN
+  INSERT INTO persons (full_name) VALUES (:new.full_name);
+  INSERT INTO subjects (subject_name) VALUES (:new.subject_name);
+END;
+
+insert into vw_twotable values ('Caner','subject');
+```
