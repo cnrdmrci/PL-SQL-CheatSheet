@@ -90,3 +90,61 @@ BEGIN
 	END IF;
 END;
 ```
+### Loops
+```sql
+--Simple Loop
+DECLARE
+	v_num number(5) := 0;
+BEGIN
+	loop
+	    v_num := v_num + 1;
+	    dbms_output.put_line('Number: ' || v_num);
+	    
+	    exit when v_num = 3;
+	    /*
+	    if v_num = 3 then
+	        exit;
+	    end if;
+	    */
+	end loop;
+END;
+
+--While Loop
+DECLARE
+	v_num number := 0;
+BEGIN
+	while v_num <= 100 loop
+
+	    exit when v_num > 40;
+	    
+	    if v_num = 20 then
+	        v_num := v_num + 1;
+	        continue;
+	    end if;
+	    
+	    if mod(v_num,10) = 0 then
+	        dbms_output.put_line(v_num || ' can be divided by 10.');
+	    end if;
+	    
+	    v_num := v_num + 1;
+	    
+	end loop;
+END;
+
+--For Loop
+DECLARE
+	v_num number := 0;
+BEGIN
+	for x in 10 .. 13 loop
+	    dbms_output.put_line(x);
+	end loop;
+
+	for x in reverse 13 .. 15 loop
+	    if mod(x,2) = 0 then
+	        dbms_output.put_line('even: ' || x);
+	    else
+	        dbms_output.put_line('odd: ' || x);
+	    end if;
+	end loop;
+END;
+```
