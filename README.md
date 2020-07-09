@@ -16,10 +16,10 @@
 - Package
 - Exceptions
 - Collections
-- Arrays
 
 ### Blocks
 ```sql
+SET SERVEROUTPUT ON;
 DECLARE
  --Declaration statements
 
@@ -448,4 +448,67 @@ begin
             dbms_output.put_line('Other exception');
             dbms_output.put_line(SQLERRM);
 end;
+```
+
+### Collections
+```sql
+--Nested table
+DECLARE
+  TYPE my_nested_table IS TABLE OF number;
+  var_nt  my_nested_table :=  my_nested_table (5,12,17,66,44,88,25,45,65);
+BEGIN
+  FOR i IN 1..var_nt.COUNT
+  LOOP
+    DBMS_OUTPUT.PUT_LINE ('Value stored at index '||i||' is '||var_nt(i));
+  END LOOP;
+END;
+
+--VARRAY
+DECLARE
+    TYPE inBlock_vry IS VARRAY (5) OF NUMBER;
+    vry_obj inBlock_vry  :=  inBlock_vry(); --inBlock_vry(null,null,null,null,null);
+BEGIN
+    --vry_obj.EXTEND(5);
+    FOR i IN 1 .. vry_obj.LIMIT
+    LOOP
+        vry_obj.EXTEND;
+        vry_obj (i):= 10*i;    
+        DBMS_OUTPUT.PUT_LINE (vry_obj (i));    
+    END LOOP;
+END;
+
+--Associative Array(dictionary)
+DECLARE
+    TYPE books IS TABLE OF NUMBER INDEX BY VARCHAR2 (20);
+    Isbn Books;
+BEGIN
+        -- How to insert data into the associative array 
+        isbn('Oracle Database') := 1122;
+        isbn('MySQL') := 6543;
+        DBMS_OUTPUT.PUT_LINE('Value Before Updation '||isbn('MySQL'));
+ 
+        -- How to update data of associative array.
+        isbn('MySQL') := 2222;
+     
+        -- how to retrieve data using key from associative array.  
+        DBMS_OUTPUT.PUT_LINE('Value After Updation '||isbn('MySQL'));
+END;
+
+--
+
+DECLARE
+    TYPE books IS TABLE OF NUMBER INDEX BY VARCHAR2 (20);
+    Isbn Books;
+    flag varchar2(20);
+BEGIN
+    isbn('Oracle Database') := 1122;
+    isbn('MySQL') := 6543;
+    isbn('MySQL') := 2222;
+    flag := isbn.FIRST;
+    while flag is not null
+    loop
+        DBMS_OUTPUT.PUT_LINE('Key -> '||flag||'Value -> '||isbn(flag));
+        flag := isbn.NEXT(flag);
+    end loop;
+END;
 ```
