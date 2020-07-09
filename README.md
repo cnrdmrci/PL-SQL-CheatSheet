@@ -264,3 +264,62 @@ begin
 end;
 
 ```
+
+### Records
+```sql
+--table based
+declare 
+    v_person persons%ROWTYPE;
+begin
+    select * into v_person from persons where PERSON_ID = 2;
+    dbms_output.put_line('Name: ' || v_person.first_name || ', Lastname: ' || v_person.last_name);
+end;
+
+--
+
+declare 
+    v_person persons%ROWTYPE;
+begin
+    select first_name,last_name into v_person.first_name,v_person.last_name from persons where PERSON_ID = 2;
+    dbms_output.put_line('Name: ' || v_person.first_name || ', Lastname: ' || v_person.last_name);
+end;
+
+--cursor based record
+declare
+    Cursor test_cursor is select first_name,last_name from persons where person_id = 2;
+    v_person test_cursor%rowtype;
+begin
+    open test_cursor;
+    fetch test_cursor into v_person;
+    dbms_output.put_line('Name: ' || v_person.first_name || ', Lastname: ' || v_person.last_name);
+    close test_cursor;
+end;
+
+--
+
+declare
+    Cursor test_cursor is select first_name,last_name from persons;
+    v_person test_cursor%rowtype;
+begin
+    open test_cursor;
+    loop
+        fetch test_cursor into v_person;
+        exit when test_cursor%NOTFOUND;
+        dbms_output.put_line('Name: ' || v_person.first_name || ', Lastname: ' || v_person.last_name);
+    end loop;
+    close test_cursor;
+end;
+
+--user based
+
+declare
+    type rv_person is record(
+        f_name varchar2(20),
+        l_name persons.last_name%type
+    );
+    v_person rv_person;
+begin
+    select first_name,last_name into v_person.f_name,v_person.l_name from persons where person_id = 2;
+    dbms_output.put_line('Name: ' || v_person.f_name || ', Lastname: ' || v_person.l_name);
+end;
+```
