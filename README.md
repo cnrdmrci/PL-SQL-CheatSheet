@@ -413,3 +413,39 @@ begin
 end;
 execute pkg_person.proc_update_lastname(2,'new lastname');
 ```
+
+### Exceptions
+```sql
+accept p_divisor number prompt 'Enter divisor';
+declare
+    v_divided number := 24;
+    v_divisor number := &p_divisor;
+    v_result number;
+    ex_four exception;
+    pragma exception_init(ex_four,-20001); --20000 , 20999
+begin
+    if v_divisor = 4 then
+        raise ex_four;
+    end if;
+    
+    if v_divisor = 5 then
+        raise_application_error(-20001,'div five');
+    end if;
+    
+    if v_divisor = 6 then
+        raise_application_error(-20002,'div six');
+    end if;
+    
+    v_result := v_divided/v_divisor;
+    
+    exception 
+        when ex_four then  --user defined
+            dbms_output.put_line('Div four');
+            dbms_output.put_line(SQLERRM);
+        when ZERO_DIVIDE then --system defined
+            dbms_output.put_line('Div zero');
+        when OTHERS then
+            dbms_output.put_line('Other exception');
+            dbms_output.put_line(SQLERRM);
+end;
+```
