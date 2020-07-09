@@ -383,3 +383,33 @@ begin
     pr_test_param('Caner');
 end;
 ```
+
+### Package
+```sql
+CREATE OR REPLACE PACKAGE pkg_person IS
+  FUNCTION get_name (v_name VARCHAR2) RETURN VARCHAR2;
+  PROCEDURE proc_update_lastname(p_id NUMBER, l_name VARCHAR2);
+END pkg_person;
+
+--Package Body
+CREATE OR REPLACE PACKAGE BODY pkg_person IS
+  --Function Implimentation
+  FUNCTION get_name (v_name VARCHAR2) RETURN VARCHAR2 IS
+    BEGIN
+      RETURN v_name;
+    END get_name;
+   
+  --Procedure Implimentation
+   PROCEDURE proc_update_lastname(p_id NUMBER, l_name VARCHAR2) IS
+     BEGIN
+      UPDATE persons SET last_name = l_name where person_id = p_id;
+     END;
+   
+END pkg_person;
+
+--
+begin
+    dbms_output.put_line(pkg_person.get_name('Caner'));
+end;
+execute pkg_person.proc_update_lastname(2,'new lastname');
+```
