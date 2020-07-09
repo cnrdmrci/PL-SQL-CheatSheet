@@ -169,6 +169,29 @@ BEGIN
 	END IF;
 END;
 
+--
+
+CREATE OR REPLACE TRIGGER persons_audit
+BEFORE INSERT OR DELETE OR UPDATE ON persons
+FOR EACH ROW
+ENABLE
+DECLARE
+  v_user varchar2 (30);
+  v_date  varchar2(30);
+BEGIN
+  SELECT user, TO_CHAR(sysdate, 'DD/MON/YYYY HH24:MI:SS') INTO v_user, v_date  FROM dual;
+  IF INSERTING THEN
+    INSERT INTO sh_audit (new_name,old_name, user_name, entry_date, operation) 
+    VALUES(:NEW.LAST_NAME, Null , v_user, v_date, 'Insert');  
+  ELSIF DELETING THEN
+    INSERT INTO sh_audit (new_name,old_name, user_name, entry_date, operation)
+    VALUES(NULL,:OLD.LAST_NAME, v_user, v_date, 'Delete');
+  ELSIF UPDATING THEN
+    INSERT INTO sh_audit (new_name,old_name, user_name, entry_date, operation) 
+    VALUES(:NEW.LAST_NAME, :OLD.LAST_NAME, v_user, v_date,'Update');
+  END IF;
+END;
+
 -- DDL Triggers
 CREATE OR REPLACE TRIGGER db_audit_tr 
 AFTER DDL ON DATABASE
