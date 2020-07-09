@@ -195,3 +195,72 @@ END;
 
 insert into vw_twotable values ('Caner','subject');
 ```
+### Cursors
+```sql
+declare
+    v_first_name varchar2(20);
+    v_last_name varchar2(20);
+    Cursor test_cursor is select first_name,last_name from persons;
+begin
+    open test_cursor;
+    loop
+        fetch test_cursor into v_first_name,v_last_name;
+        exit when test_cursor%NOTFOUND;
+        dbms_output.put_line('Name: ' || v_first_name || ', Lastname: ' || v_last_name);
+    end loop;
+    close test_cursor;
+end;
+
+----
+
+declare
+    v_first_name varchar2(20);
+    v_last_name varchar2(20);
+    Cursor test_cursor (first_name_parameter varchar2) is select first_name,last_name from persons where first_name = first_name_parameter;
+begin
+    open test_cursor('caner');
+    loop
+        fetch test_cursor into v_first_name,v_last_name;
+        exit when test_cursor%NOTFOUND;
+        dbms_output.put_line('Name: ' || v_first_name || ', Lastname: ' || v_last_name);
+    end loop;
+    close test_cursor;
+end;
+
+----
+
+declare
+    v_first_name varchar2(20);
+    v_last_name varchar2(20);
+    Cursor test_cursor (first_name_parameter varchar2 := 'caner') is select first_name,last_name from persons where first_name = first_name_parameter;
+begin
+    open test_cursor;
+    loop
+        fetch test_cursor into v_first_name,v_last_name;
+        exit when test_cursor%NOTFOUND;
+        dbms_output.put_line('Name: ' || v_first_name || ', Lastname: ' || v_last_name);
+    end loop;
+    close test_cursor;
+end;
+
+--for
+declare
+    Cursor test_cursor is select first_name,last_name from persons;
+begin
+    for obj in test_cursor
+    loop 
+        dbms_output.put_line('Name: ' || obj.first_name || ', Lastname: ' || obj.last_name);
+    end loop;
+end;
+
+--for parameter
+declare
+    Cursor test_cursor (first_name_parameter varchar2 := 'can') is select first_name,last_name from persons where first_name = first_name_parameter;
+begin
+    for obj in test_cursor('caner')
+    loop 
+        dbms_output.put_line('Name: ' || obj.first_name || ', Lastname: ' || obj.last_name);
+    end loop;
+end;
+
+```
