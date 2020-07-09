@@ -323,3 +323,63 @@ begin
     dbms_output.put_line('Name: ' || v_person.f_name || ', Lastname: ' || v_person.l_name);
 end;
 ```
+
+### Functions
+```sql
+CREATE OR REPLACE FUNCTION circle_area (radius NUMBER) 
+RETURN NUMBER IS
+--Declare a constant and a variable
+pi      CONSTANT NUMBER(7,3) := 3.141;
+area    NUMBER(7,3);
+BEGIN
+  --Area of Circle pi*r*r;
+  area := pi * (radius * radius);
+  RETURN area; 
+END;
+
+BEGIN
+	dbms_output.put_line('Alan: ' || circle_area(10));
+END;
+```
+
+### Stored Procedure
+```sql
+create or replace procedure pr_test is
+    v_name varchar(20) := 'Caner';
+    v_city varchar(20) := 'Istanbul';
+begin
+    dbms_output.put_line(v_name || ',' || v_city);
+end pr_test;
+--
+execute pr_test;
+--
+begin
+    pr_test;
+end;
+
+----
+
+create or replace procedure pr_test_param(v_name varchar2 default 'caz') 
+is
+    v_city varchar(20) := 'Istanbul';
+begin
+    dbms_output.put_line(v_name || ',' || v_city);
+end pr_test_param;
+--
+execute pr_test_param(v_name => 'cam');
+
+----
+
+create or replace procedure pr_test_param(v_name varchar2) 
+is
+    v_city varchar(20) := 'Istanbul';
+begin
+    dbms_output.put_line(v_name || ',' || v_city);
+end pr_test_param;
+--
+execute pr_test_param('Caner');
+--
+begin
+    pr_test_param('Caner');
+end;
+```
