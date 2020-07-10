@@ -46,6 +46,8 @@ END;
 --NUMBER(precision,scale)
 v_number NUMBER(5,2) := 5.01;
 v_character VARCHAR2(20) := 'test';
+newyear DATE:='01-JAN-2020';
+current_date DATE:=SYSDATE;
 ```
 
 ### Constant
@@ -533,5 +535,157 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('Key -> '||flag||'Value -> '||isbn(flag));
         flag := isbn.NEXT(flag);
     end loop;
+END;
+
+-----Collection Methods
+--Count
+DECLARE
+    TYPE my_nested_table IS TABLE OF number;
+    var_nt my_nested_table := my_nested_table (5,12,17,66,44,88,25,45,65);
+BEGIN
+    DBMS_OUTPUT.PUT_LINE ('The Size of the Nested Table is ' ||var_nt.count);
+END;
+
+
+--exists
+DECLARE
+    TYPE my_nested_table IS TABLE OF VARCHAR2 (20); 
+	col_var_1   my_nested_table := my_nested_table('Super Man','Iron Man','Bat Man');
+BEGIN
+    IF col_var_1.EXISTS (4) THEN
+        DBMS_OUTPUT.PUT_LINE ('Hey we found '||col_var_1 (1));
+    ELSE
+        DBMS_OUTPUT.PUT_LINE ('Sorry, no data at this INDEX');
+        col_var_1.EXTEND;
+        col_var_1(4) := 'Spiderman';
+    END IF;
+    IF col_var_1.EXISTS (4) THEN
+        DBMS_OUTPUT.PUT_LINE ('New data at index 4 '||col_var_1 (4));
+    end if;
+END;
+
+--first and last
+SET SERVEROUTPUT ON;
+DECLARE
+    TYPE nt_tab IS TABLE OF NUMBER;
+    col_var nt_tab := nt_tab(10, 20, 30, 40, 50);
+BEGIN
+    col_var.DELETE(1);
+    col_var.TRIM;
+    DBMS_OUTPUT.PUT_LINE ('First Index of the Nested table is ' || col_var.FIRST);
+    DBMS_OUTPUT.PUT_LINE ('Last Index of the Nested table is ' || col_var.LAST);
+
+    DBMS_OUTPUT.PUT_LINE ('Value stored at First Index is ' || col_var(col_var.FIRST));
+    DBMS_OUTPUT.PUT_LINE ('Value stored at First Index is ' || col_var(col_var.LAST));
+END;
+
+--limit
+DECLARE
+    TYPE inBlock_vry IS VARRAY (5) OF NUMBER;
+    vry_obj inBlock_vry := inBlock_vry();
+BEGIN
+    DBMS_OUTPUT.PUT_LINE ('Total Indexes '||vry_obj.LIMIT);
+END;
+
+--
+DECLARE
+    --Create VARRAY of 5 element
+    TYPE inblock_vry IS
+        VARRAY ( 5 ) OF NUMBER;
+    vry_obj   inblock_vry := inblock_vry ();
+BEGIN
+    vry_obj.extend;
+    vry_obj(1) := 10 * 2; 
+    dbms_output.put_line('Total Number of Index ' || vry_obj.limit);
+    dbms_output.put_line('Total Number of Index which are occupied ' || vry_obj.count);
+END;
+
+-- Prior and Next
+DECLARE
+    TYPE my_nested_table IS
+        TABLE OF NUMBER;
+    var_nt   my_nested_table := my_nested_table(5,12,17,66,44,88,25,45,65);
+BEGIN
+        var_nt.DELETE(2);
+        dbms_output.put_line('Index prior to index 3 is '||var_nt.PRIOR(3)); 
+        dbms_output.put_line('Value before 3rd Index is '||var_nt(var_nt.PRIOR(3))); 
+END;
+--
+DECLARE
+    TYPE my_nested_table IS
+        TABLE OF NUMBER;
+    var_nt   my_nested_table := my_nested_table(5,12,17,66,44,88,25,45,65);
+BEGIN
+        dbms_output.put_line('Next Higher Index to index 3 is '||var_nt.NEXT(3)); 
+        dbms_output.put_line('Value after 3rd Index is '||var_nt(var_nt.NEXT(3))); 
+END;
+
+--Delete
+DECLARE
+    TYPE my_nested_table IS
+        TABLE OF NUMBER;
+    var_nt my_nested_table := my_nested_table(2,4,6,8,10,12,14,16,18,20);
+BEGIN
+ 
+    --Delete Range
+    var_nt.DELETE(2,6);
+    FOR i IN 1..var_nt.LAST LOOP
+        IF var_nt.EXISTS(i) THEN
+            DBMS_OUTPUT.PUT_LINE('Value at Index ['||i||'] is '|| var_nt(i));
+        END IF;
+    END LOOP;
+END;
+
+--extend
+DECLARE
+    TYPE my_nestedTable IS TABLE OF number;
+    nt_obj  my_nestedTable := my_nestedTable();
+BEGIN
+    nt_obj.EXTEND;
+    nt_obj(1) := 28;
+    nt_obj.EXTEND(3);
+    nt_obj(2) := 10;
+    nt_obj(3) := 20;
+    nt_obj(4) := 30;
+    DBMS_OUTPUT.PUT_LINE ('Data at index 1 is '||nt_obj(1));
+    DBMS_OUTPUT.PUT_LINE ('Data at index 2 is '||nt_obj(2)); 
+    DBMS_OUTPUT.PUT_LINE ('Data at index 3 is '||nt_obj(3));
+    DBMS_OUTPUT.PUT_LINE ('Data at index 4 is '||nt_obj(4));
+    nt_obj.EXTEND(2,4);
+    DBMS_OUTPUT.PUT_LINE ('Data at index 5 is '||nt_obj(5));
+    DBMS_OUTPUT.PUT_LINE ('Data at index 6 is '||nt_obj(6));
+END;
+
+--TRIM
+DECLARE
+ TYPE inBlock_vry IS VARRAY (5) OF NUMBER;
+ vry_obj inBlock_vry := inBlock_vry(1, 2, 3, 4, 5);
+BEGIN
+    --TRIM without parameter
+    vry_obj.TRIM;
+    DBMS_OUTPUT.PUT_LINE ('After TRIM procedure');
+    FOR i IN 1..vry_obj.COUNT
+    LOOP
+        DBMS_OUTPUT.PUT_LINE (vry_obj(i));
+    END LOOP;
+    --TRIM with Parameter
+    vry_obj.TRIM (2);
+    DBMS_OUTPUT.PUT_LINE ('After TRIM procedure');
+    FOR i IN 1..vry_obj.COUNT
+    LOOP
+        DBMS_OUTPUT.PUT_LINE (vry_obj(i));
+    END LOOP;
+END;
+--
+DECLARE
+    TYPE my_nestedTable IS TABLE OF number;
+    nt_obj  my_nestedTable := my_nestedTable(1,2,3,4,5);
+BEGIN
+    nt_obj.TRIM (3);
+    DBMS_OUTPUT.PUT_LINE ('After TRIM procedure');
+    FOR i IN 1..nt_obj.COUNT
+    LOOP
+        DBMS_OUTPUT.PUT_LINE (nt_obj(i));
+    END LOOP;
 END;
 ```
