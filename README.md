@@ -17,6 +17,7 @@
 - [Package](#package)
 - [Exceptions](#exceptions)
 - [Collections](#collections)
+- [Object Oriented](#object-oriented)
 
 ### Blocks
 ```sql
@@ -745,4 +746,38 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE (nt_obj(i));
     END LOOP;
 END;
+```
+
+### Object Oriented
+```sql
+CREATE OR REPLACE TYPE Worker AS OBJECT (
+    v_id number(3),
+    v_name varchar2(10),
+    v_last_name varchar(10),
+    v_email varchar(20),
+    member procedure display,
+    member function getName return varchar2
+); 
+
+CREATE OR REPLACE TYPE BODY Worker AS
+    MEMBER PROCEDURE display IS
+    BEGIN
+        DBMS_OUTPUT.put_line('id: '||SELF.v_id);
+        DBMS_OUTPUT.put_line('name: '||SELF.v_name);
+        DBMS_OUTPUT.put_line('lastName : '||SELF.v_last_name);
+        DBMS_OUTPUT.put_line('mail: '||SELF.v_email);
+    END;
+    MEMBER FUNCTION getName RETURN VARCHAR2 IS
+    BEGIN
+        RETURN SELF.v_name || ' ' || SELF.v_last_name;
+    END;
+END;
+
+DECLARE
+    v_person Worker := new Worker(1, 'Caner', 'lastName', 'mail@.com');	--constructor
+BEGIN
+    DBMS_OUTPUT.put_line('Name: '||v_person.getName());
+    v_person.display;
+END;
+
 ```
