@@ -294,7 +294,8 @@ end;
 declare
     v_first_name varchar2(20);
     v_last_name varchar2(20);
-    Cursor test_cursor (first_name_parameter varchar2) is select first_name,last_name from persons where first_name = first_name_parameter;
+    Cursor test_cursor (first_name_parameter varchar2) is 
+    	select first_name,last_name from persons where first_name = first_name_parameter;
 begin
     open test_cursor('caner');
     loop
@@ -310,7 +311,8 @@ end;
 declare
     v_first_name varchar2(20);
     v_last_name varchar2(20);
-    Cursor test_cursor (first_name_parameter varchar2 := 'caner') is select first_name,last_name from persons where first_name = first_name_parameter;
+    Cursor test_cursor (first_name_parameter varchar2 := 'caner') is 
+    	select first_name,last_name from persons where first_name = first_name_parameter;
 begin
     open test_cursor;
     loop
@@ -333,7 +335,8 @@ end;
 
 --for parameter
 declare
-    Cursor test_cursor (first_name_parameter varchar2 := 'can') is select first_name,last_name from persons where first_name = first_name_parameter;
+    Cursor test_cursor (first_name_parameter varchar2 := 'can') is 
+    	select first_name,last_name from persons where first_name = first_name_parameter;
 begin
     for obj in test_cursor('caner')
     loop 
@@ -358,7 +361,8 @@ end;
 declare 
     v_person persons%ROWTYPE;
 begin
-    select first_name,last_name into v_person.first_name,v_person.last_name from persons where PERSON_ID = 2;
+    select first_name,last_name into v_person.first_name,v_person.last_name 
+    	from persons where PERSON_ID = 2;
     dbms_output.put_line('Name: ' || v_person.first_name || ', Lastname: ' || v_person.last_name);
 end;
 
