@@ -270,6 +270,11 @@ insert into vw_twotable values ('Caner','subject');
 ```
 ### Cursors
 ```sql
+--%FOUND
+--%NOTFOUND
+--%ISOPEN
+--%ROWCOUNT
+
 declare
     v_first_name varchar2(20);
     v_last_name varchar2(20);
