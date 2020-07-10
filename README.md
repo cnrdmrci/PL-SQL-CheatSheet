@@ -756,7 +756,8 @@ CREATE OR REPLACE TYPE Worker AS OBJECT (
     v_last_name varchar(10),
     v_email varchar(20),
     member procedure display,
-    member function getName return varchar2
+    member function getName return varchar2,
+    static procedure displaySquare(v_num number)
 ); 
 
 CREATE OR REPLACE TYPE BODY Worker AS
@@ -771,6 +772,10 @@ CREATE OR REPLACE TYPE BODY Worker AS
     BEGIN
         RETURN SELF.v_name || ' ' || SELF.v_last_name;
     END;
+    STATIC PROCEDURE displaySquare(v_num number) IS
+    BEGIN
+        DBMS_OUTPUT.put_line('Square : '||v_num);
+    END;
 END;
 
 DECLARE
@@ -778,6 +783,7 @@ DECLARE
 BEGIN
     DBMS_OUTPUT.put_line('Name: '||v_person.getName());
     v_person.display;
+    Worker.displaySquare(2);
 END;
 
 ```
